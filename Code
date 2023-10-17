@@ -1,0 +1,87 @@
+/* DIGF-3010 Advanced Wearables 2023
+  Kate Hartman
+  4 digital inputs to activate 4 keyboard keys
+  no resistor needed
+  Based on Keyboard library examples
+ */
+
+#include "Keyboard.h"
+
+#define DEBOUNCE 100  // delay for ensuring that the button presses do not overlap
+
+
+// Variables that won't change
+
+const int buttonPin1 = 6;  //A1
+const int buttonPin2 = 2;  //A5
+const int buttonPin3 = 0;  //A6
+const int buttonPin4 = 9;  //A2
+
+// Modified as per circuit diagram.
+
+const int keyboardKey1 = KEY_UP_ARROW;
+const int keyboardKey2 = KEY_DOWN_ARROW;
+const int keyboardKey3 = KEY_LEFT_ARROW;
+const int keyboardKey4 = KEY_RIGHT_ARROW;
+
+// Variables that will change
+
+int buttonValue1 = 1;
+int buttonValue2 = 1;
+int buttonValue3 = 1;
+int buttonValue4 = 1;
+
+
+void setup() {
+
+  // initialize the buttons' inputs:
+  // (shouldn't change normally, uae as is; delcaring to arduino that pins are going to be inputs)
+  // a pull up essentially is higher voltage or extra juice, to track electricity changes
+  pinMode(buttonPin1, INPUT_PULLUP);
+  pinMode(buttonPin2, INPUT_PULLUP);
+  pinMode(buttonPin3, INPUT_PULLUP);
+  pinMode(buttonPin4, INPUT_PULLUP);
+
+  // initialize serial
+  Serial.begin(9600);
+  // establishes the connection
+
+  Keyboard.begin();
+}
+
+void loop() {
+
+  // read all button pins
+  buttonValue1 = digitalRead(buttonPin1);
+  buttonValue2 = digitalRead(buttonPin2);
+  buttonValue3 = digitalRead(buttonPin3);
+  buttonValue4 = digitalRead(buttonPin4);
+
+  // use the button values to control  keyboard
+  // LOW means circuit is closed and ON
+  if (buttonValue1 == LOW) {
+    Keyboard.press(keyboardKey1);
+    Serial.println("Button 1 pressed");
+    delay(50);
+  }
+  if (buttonValue2 == LOW) {
+    Keyboard.press(keyboardKey2);
+    Serial.println("Button 2 pressed");
+    delay(50);
+  }
+  if (buttonValue3 == LOW) {
+    Keyboard.write(keyboardKey3);
+    Serial.println("Button 3 pressed");
+    delay(50);
+  }
+  if (buttonValue4 == LOW) {
+    Keyboard.write(keyboardKey4);
+    Serial.println("Button 4 pressed");
+    delay(50);
+  }  
+    Keyboard.releaseAll();
+  
+
+
+  delay(DEBOUNCE);  // delay in between reads for stability
+}
